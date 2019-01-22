@@ -1,4 +1,11 @@
 # coding=utf-8
+
+"""
+gpu版需要改动如下两处
+tf.app.flags.DEFINE_string('cpu', '0', '')
+os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.cpu
+"""
+
 import os
 import shutil
 import sys
@@ -15,7 +22,7 @@ from util.text_connector.detectors import TextDetector
 
 tf.app.flags.DEFINE_string('test_data_path', 'data/demo/', '')
 tf.app.flags.DEFINE_string('output_path', 'data/res/', '')
-tf.app.flags.DEFINE_string('gpu', '0', '')
+tf.app.flags.DEFINE_string('cpu', '0', '')
 tf.app.flags.DEFINE_string('checkpoint_path', 'checkpoints_mlt/', '')
 FLAGS = tf.app.flags.FLAGS
 
@@ -55,7 +62,7 @@ def main(argv=None):
     if os.path.exists(FLAGS.output_path):
         shutil.rmtree(FLAGS.output_path)
     os.makedirs(FLAGS.output_path)
-    os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.gpu
+    os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.cpu
 
     with tf.get_default_graph().as_default():
         input_image = tf.placeholder(tf.float32, shape=[None, None, None, 3], name='input_image')
