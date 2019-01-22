@@ -6,20 +6,20 @@ import numpy as np
 from tqdm import tqdm
 
 sys.path.append(os.getcwd())
-from utils.prepare.utils import orderConvex, shrink_poly
+from util.prepare.utils import orderConvex, shrink_poly
 
-DATA_FOLDER = "/media/D/DataSet/mlt_selected/"
-OUTPUT = "data/dataset/mlt/"
+DATA_FOLDER = "/Users/mvpzhao/data/tianchi-mtwi/mtwi_2018_train"
+OUTPUT = "/Users/mvpzhao/data/tianchi-mtwi/image_train_split"
 MAX_LEN = 1200
 MIN_LEN = 600
 
-im_fns = os.listdir(os.path.join(DATA_FOLDER, "image"))
+im_fns = os.listdir(os.path.join(DATA_FOLDER, "image_train"))
 im_fns.sort()
 
-if not os.path.exists(os.path.join(OUTPUT, "image")):
-    os.makedirs(os.path.join(OUTPUT, "image"))
-if not os.path.exists(os.path.join(OUTPUT, "label")):
-    os.makedirs(os.path.join(OUTPUT, "label"))
+if not os.path.exists(os.path.join(OUTPUT, "image_train")):
+    os.makedirs(os.path.join(OUTPUT, "image_train"))
+if not os.path.exists(os.path.join(OUTPUT, "txt_train")):
+    os.makedirs(os.path.join(OUTPUT, "txt_train"))
 
 for im_fn in tqdm(im_fns):
     try:
@@ -28,8 +28,8 @@ for im_fn in tqdm(im_fns):
         if ext.lower() not in ['.jpg', '.png']:
             continue
 
-        gt_path = os.path.join(DATA_FOLDER, "label", 'gt_' + bfn + '.txt')
-        img_path = os.path.join(DATA_FOLDER, "image", im_fn)
+        gt_path = os.path.join(DATA_FOLDER, "txt_train", bfn + '.txt')
+        img_path = os.path.join(DATA_FOLDER, "image_train", im_fn)
 
         img = cv.imread(img_path)
         img_size = img.shape
@@ -49,7 +49,7 @@ for im_fn in tqdm(im_fns):
         re_size = re_im.shape
 
         polys = []
-        with open(gt_path, 'r') as f:
+        with open(gt_path, 'r', encoding='UTF-8') as f:
             lines = f.readlines()
         for line in lines:
             splitted_line = line.strip().lower().split(',')
@@ -81,15 +81,15 @@ for im_fn in tqdm(im_fns):
 
                 res_polys.append([x_min, y_min, x_max, y_max])
 
-        cv.imwrite(os.path.join(OUTPUT, "image", fn), re_im)
-        with open(os.path.join(OUTPUT, "label", bfn) + ".txt", "w") as f:
+        cv.imwrite(os.path.join(OUTPUT, "image_train", fn), re_im)
+        with open(os.path.join(OUTPUT, "txt_train", bfn) + ".txt", "w") as f:
             for p in res_polys:
                 line = ",".join(str(p[i]) for i in range(4))
                 f.writelines(line + "\r\n")
                 # for p in res_polys:
-                #    cv.rectangle(re_im,(p[0],p[1]),(p[2],p[3]),color=(0,0,255),thickness=1)
-
-                # cv.imshow("demo",re_im)
-                # cv.waitKey(0)
-    except:
+                #     cv.rectangle(re_im, (p[0], p[1]), (p[2], p[3]), color=(0, 0, 255), thickness=1)
+                #     cv.imshow("demo", re_im)
+                #     cv.waitKey(0)
+    except Exception as err:
+        print(err)
         print("Error processing {}".format(im_fn))

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 import numpy as np
-from utils.bbox.nms import nms
+from util.bbox.nms import nms
 
-from utils.bbox.bbox_transform import bbox_transform_inv, clip_boxes
-from utils.rpn_msr.config import Config as cfg
-from utils.rpn_msr.generate_anchors import generate_anchors
+from util.bbox.bbox_transform import bbox_transform_inv, clip_boxes
+from util.rpn_msr.config import Config as cfg
+from util.rpn_msr.generate_anchors import generate_anchors
 
 DEBUG = False
 
